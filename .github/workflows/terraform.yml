@@ -26,7 +26,7 @@ jobs:
 
     - name: Update IriusRisk product from IaC code
       run: |
-        curl -i -X "PUT" "$IRIUSRISK_DOMAIN/api/v1/products/terraform/$IRIUSRISK_PRODUCT_ID" -H "accept: application/json" -H "api-token: $API_TOKEN_IRIUSRISK" -H "Content-Type: multipart/form-data" -F "tf-file=@$TF_FILE"
+        curl -i -X "PUT" "${{ secrets.IRIUSRISK_DOMAIN }}/api/v1/products/terraform/${{ secrets.IRIUSRISK_PRODUCT_ID }}" -H "accept: application/json" -H "api-token: ${{ secrets.API_TOKEN_IRIUSRISK }}" -H "Content-Type: multipart/form-data" -F "tf-file=@${{ secrets.TF_FILE }}"
       
     # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
     #- name: Setup Terraform
