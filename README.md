@@ -6,16 +6,18 @@ IriusRisk allow in their API upload the terraform file to automatically create a
 ---
 # Integration
 
-In the *YML* file that is used in the gitlab pipeline of your project, We have to add the following lines:
+In the *YML* file that is used by github actions pipeline of your project, We have to add the following lines as a step:
 
 ```yml
-update_iriusrisk:
-    before_script:
-        - apk add --no-cache curl
-    script:
-        - 'curl -i -X "PUT" "$IRIUSRISK_DOMAIN/api/v1/products/terraform/$IRIUSRISK_PRODUCT_ID" -H "accept: application/json" -H "api-token: $API_TOKEN_IRIUSRISK" -H "Content-Type: multipart/form-data" -F "tf-file=@$TF_FILE"'
+- name: Update IriusRisk product from IaC code
+      run: |
+        curl -i -X "PUT" "${{ secrets.IRIUSRISK_DOMAIN }}/api/v1/products/terraform/${{ secrets.IRIUSRISK_PRODUCT_ID }}" -H "accept: application/json" -H "api-token: ${{ secrets.API_TOKEN_IRIUSRISK }}" -H "Content-Type: multipart/form-data" -F "tf-file=@${{ secrets.TF_FILE }}"
+      
 ```
-With this step, when the pipeline is executed, the IriusRisk product will be updated with the IaC. But before, que have to configurate and add the variables needed
+
+![yml](./images/yml.png)
+
+With this step, when the pipeline is executed, the IriusRisk product will be updated with the IaC. But before, We have to configurate and add the variables needed.
 
 ## Configuration
 We have to manage the access to the API to allow the pipeline. First of all, in the settings of IriusRisk, the API must be enabled.
@@ -33,15 +35,11 @@ Then, We have to define the following variables for the pipeline:
 - **IRIUSRISK_PRODUCT_ID**: The product id (the product must be created before this)
 - **TF_FILE**: The path of the terrafom file. For example: main.tf
 
-To add this variables We have to navigate to the settings tab of your project, and select our CI/CD, then, expand the variables section and click on *Add variable*.
-
-Now, click on variables and add them.
+To add this variables We have to navigate to the settings tab of your project, and select *Secrets and variables* -> *Actions*. Then click on  *New repository secret*.
 
 ![Edit variables](./images/edit_variables.png)
 
 ![Adding a variable](./images/adding_variable.png)
-
-<span style="color:yellow">**WARNING**:</span> Check *Mask variable* with the API token
 
 
 # References
